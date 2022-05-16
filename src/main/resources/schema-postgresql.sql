@@ -10,4 +10,3 @@ CREATE TABLE students (
     email VARCHAR(50),
     admitted_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-

@@ -11,11 +11,10 @@ CREATE TABLE students (
     admitted_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE teachers (
-    id serial  PRIMARY KEY,
-    stu_id VARCHAR(10),
-    nm VARCHAR(50),
-    email VARCHAR(50),
-    admitted_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE categories (
+    category_id         BIGINT AUTO_INCREMENT,
+    category            VARCHAR(255) NOT NULL,
+
+    PRIMARY KEY (category_id)
 );
 

@@ -13,7 +13,7 @@ import Protected from "./Protected";
 const oktaAuth = new OktaAuth({
   issuer: "https://trial-1640146.okta.com/oauth2/default",
   clientId: "0oa168p4r9QWpvKrY697",
-  redirectUri: "http://localhost:3000/login/callback",
+  redirectUri: window.location.origin + "/login/callback",
   scopes: ["openid", "profile", "email"],
   pkce: true,
   disableHttpsCheck: true,

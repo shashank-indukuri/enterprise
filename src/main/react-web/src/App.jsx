@@ -4,7 +4,7 @@ import { Security, SecureRoute, LoginCallback } from "@okta/okta-react";
 import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
 import HomePage from "./pages/HomePage";
 import Login from "./components/User/Login";
-import Booking from "./Pages/Booking";
+import Booking from "./pages/Booking";
 import config from "./config";
 import "./App.css";
 import HeaderBar from "./pages/HeaderBar";

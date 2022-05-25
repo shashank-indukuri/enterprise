@@ -2,11 +2,13 @@ import React from "react";
 import { Route, useHistory } from "react-router-dom";
 import { Security, SecureRoute, LoginCallback } from "@okta/okta-react";
 import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
-import Home from "./Home";
-import Login from "./Login";
-import Protected from "./Protected";
+import HomePage from "./pages/HomePage";
+import Login from "./components/User/Login";
+import Booking from "./Pages/Booking";
 import config from "./config";
 import "./App.css";
+import HeaderBar from "./pages/HeaderBar";
+import { Container } from "react-bootstrap";
 
 const oktaAuth = new OktaAuth(config.oidc);
 
@@ -24,16 +26,18 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <p>My Okta-React app</p>
         <Security
           oktaAuth={oktaAuth}
           onAuthRequired={customAuthHandler}
           restoreOriginalUri={restoreOriginalUri}
         >
-          <Route path="/" exact component={Home} />
-          <SecureRoute path="/protected" component={Protected} />
-          <Route path="/login" render={() => <Login />} />
-          <Route path="/login/callback" component={LoginCallback} />
+          <Container>
+            <HeaderBar />
+            <Route path="/" exact component={HomePage} />
+            <SecureRoute path="/booking" component={Booking} />
+            <Route path="/login" render={() => <Login />} />
+            <Route path="/login/callback" component={LoginCallback} />
+          </Container>
         </Security>
       </header>
     </div>

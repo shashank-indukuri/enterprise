@@ -1,13 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { RequestProvider } from "react-request-hook";
+import axios from "axios";
 import App from "./App";
-import { BrowserRouter } from "react-router-dom";
 import "./index.css";
+
+const axiosInstance = axios.create({
+  baseURL: "/",
+});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <RequestProvider value={axiosInstance}>
       <App />
-    </BrowserRouter>
+    </RequestProvider>
   </React.StrictMode>
 );

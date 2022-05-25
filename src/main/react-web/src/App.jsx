@@ -1,40 +1,37 @@
-import React from "react";
-import { SecureRoute, Security, LoginCallback } from "@okta/okta-react";
-import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  useHistory,
-} from "react-router-dom";
-import Home from "./Home";
-import Protected from "./Protected";
+import React, { useReducer } from "react";
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import appReducer from "./store/reducers";
+import StateContext from "./store/Contexts";
+import HeaderBar from "./pages/HeaderBar";
+import HomePage from "./pages/HomePage";
+import Booking from "./pages/Booking";
 
-const oktaAuth = new OktaAuth({
-  issuer: "https://trial-1640146.okta.com/oauth2/default",
-  clientId: "0oa168p4r9QWpvKrY697",
-  redirectUri: window.location.origin + "/login/callback",
-  scopes: ["openid", "profile", "email"],
-  pkce: true,
-  disableHttpsCheck: true,
-});
+function App() {
+  const [state, dispatch] = useReducer(appReducer, {
+    user: {},
+  });
+  const { user } = state;
 
-const App = () => {
-  const history = useHistory();
-  const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-    history.replace(toRelativeUrl(originalUri || "/", window.location.origin));
-  };
-
-  return (
-    <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/test" component={Protected} />
-        <Route path="/login/callback" exact component={LoginCallback} />
-        <SecureRoute path="/protected" component={Protected} />
-      </Switch>
-    </Security>
+  const routes = (
+    <Routes>
+      <Route path="/booking" element={<Booking />}></Route>
+      <Route index element={<HomePage />} />
+    </Routes>
   );
-};
+  return (
+    <div className="App">
+      <StateContext.Provider value={{ state, dispatch }}>
+        <Router>
+          <Container>
+            <HeaderBar />
+            {routes}
+          </Container>
+        </Router>
+      </StateContext.Provider>
+    </div>
+  );
+}
 
 export default App;

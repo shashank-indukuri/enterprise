@@ -1,61 +1,43 @@
-import React, { useReducer } from "react";
-import "./App.css";
-import { SecureRoute, Security, LoginCallback } from "@okta/okta-react";
+import React from "react";
+import { Route, useHistory } from "react-router-dom";
+import { Security, SecureRoute, LoginCallback } from "@okta/okta-react";
 import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
-import {
-  BrowserRouter as Router,
-  useHistory,
-  Route,
-  Switch,
-} from "react-router-dom";
-import { Container } from "react-bootstrap";
-import appReducer from "./store/reducers";
-import StateContext from "./store/Contexts";
-import HeaderBar from "./pages/HeaderBar";
-import HomePage from "./pages/HomePage";
-import Booking from "./pages/Booking";
+import Home from "./Home";
+import Login from "./Login";
+import Protected from "./Protected";
+import config from "./config";
+import "./App.css";
 
-const CALLBACK_PATH = "/login/callback";
-const oktaAuth = new OktaAuth({
-  issuer: "https://trial-1640146.okta.com/oauth2/default",
-  clientId: "0oa168p4r9QWpvKrY697",
-  redirectUri: window.location.origin + "/login/callback",
-});
+const oktaAuth = new OktaAuth(config.oidc);
 
-const AppWithOkta = () => {
+const App = () => {
   const history = useHistory();
+
+  const customAuthHandler = () => {
+    history.push("/login");
+  };
+
   const restoreOriginalUri = async (_oktaAuth, originalUri) => {
-    history.replace(toRelativeUrl(originalUri || "/", window.location.origin));
+    history.replace(toRelativeUrl(originalUri || "", window.location.origin));
   };
 
   return (
-    <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
-      <Container>
-        <HeaderBar />
-        <Route path="/" exact component={HomePage} />
-        <Route path={CALLBACK_PATH} exact component={LoginCallback} />
-        <Route path="/movies" component={Booking} />
-        <SecureRoute path="/booking" component={Booking} />
-      </Container>
-    </Security>
-  );
-};
-
-function App() {
-  const [state, dispatch] = useReducer(appReducer, {
-    user: {},
-  });
-  const { user } = state;
-
-  return (
     <div className="App">
-      <StateContext.Provider value={{ state, dispatch }}>
-        <Router>
-          <AppWithOkta />
-        </Router>
-      </StateContext.Provider>
+      <header className="App-header">
+        <p>My Okta-React app</p>
+        <Security
+          oktaAuth={oktaAuth}
+          onAuthRequired={customAuthHandler}
+          restoreOriginalUri={restoreOriginalUri}
+        >
+          <Route path="/" exact component={Home} />
+          <SecureRoute path="/protected" component={Protected} />
+          <Route path="/login" render={() => <Login />} />
+          <Route path="/login/callback" component={LoginCallback} />
+        </Security>
+      </header>
     </div>
   );
-}
+};
 
 export default App;
